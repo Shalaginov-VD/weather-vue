@@ -10,8 +10,11 @@
   <h1>Погода {{ selectedCityName }}</h1>
   <h3 v-if="!weather">Загрузка...</h3>
   <h3 v-else-if="weather">
-    Сейчас {{ (weather['main']['temp'] - 273.15).toFixed(2) }} градусов Цельсия,<br />
-    {{ weather['main']['pressure'] }} гПа давление
+    Сейчас {{ weather['main']['temp'] }} градусов Цельсия,
+    {{ weather['weather'][0]['main'] }}<br />
+    {{ weather['main']['pressure'] }} гПа давления,<br />
+    {{ weather['main']['humidity'] }}% влажности,<br />
+    {{ weather['wind']['speed'] }} м/с скорость ветра
   </h3>
 </template>
 
@@ -41,7 +44,7 @@ export default {
         this.selectedCityName = this.cities[this.selectedCity].name;
         const { lat, lon } = this.cities[this.selectedCity];
 
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=7d44d3f288627d47a09f48d8806ed066`)
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=7d44d3f288627d47a09f48d8806ed066&units=metric`)
         .then(resp=>resp.json())
         .then(json=>{
           this.weather = json;

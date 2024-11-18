@@ -10,12 +10,14 @@
   <h1>Погода {{ selectedCityName }}</h1>
   <h3 v-if="!weather">Загрузка...</h3>
   <h3 v-else-if="weather">
-    Сейчас {{ weather['main']['temp'] }} градусов Цельсия,
+    Сейчас {{ weather['main']['temp'] }} градусов,
     {{ weather['weather'][0]['main'] }}<br />
     {{ weather['main']['pressure'] }} гПа давления,<br />
     {{ weather['main']['humidity'] }}% влажности,<br />
-    {{ weather['wind']['speed'] }} м/с скорость ветра
+    {{ weather['wind']['speed'] }} м/с скорость ветра, 
+    {{ getWindDirection(weather['wind']['deg']) }} направление
   </h3>
+  <button v-if="selectedCity" @click="toggleUnits">{{ metrics }} °</button>
 </template>
 
 <script>
@@ -31,6 +33,7 @@ export default {
       selectedCity: '',
       selectedCityName: '',
       weather: null,
+      metrics: 'F',
       cities: {
         ekb: { name: 'Екатеринбург', lat: 56.8519, lon: 60.6122 },
         msk: { name: 'Москва', lat: 55.7522, lon: 37.6156 },
@@ -49,6 +52,20 @@ export default {
         .then(json=>{
           this.weather = json;
         });
+      }
+    },
+    getWindDirection(deg) {
+      const directions = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
+      return directions[Math.round(deg / 45) % 8];
+    },
+    toggleUnits() {
+      this.metrics = this.metrics === 'C' ? 'F' : 'C';
+      if (this.weather) {
+        if (this.metrics === 'C') {
+          this.weather.main.temp = parseFloat(((this.weather.main.temp - 32) * 5 / 9).toFixed(2));
+        } else {
+          this.weather.main.temp = parseFloat(((this.weather.main.temp * 9 / 5) + 32).toFixed(2));
+        }
       }
     }
   }

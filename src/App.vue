@@ -8,22 +8,27 @@
 </select>
 
 <h1>{{ $t('weather') }} {{ selectedCityName }}</h1>
-<h3 v-if="!weather">{{ $t('loading') }}</h3>
-<h3 v-else-if="weather">
-  {{ $t('now') }} {{ weather['main']['temp'] }} {{ $t('temperature') }},
-  {{ weather['weather'][0]['description'] }}
-  <img :src="`http://openweathermap.org/img/wn/${weather.weather[0].icon}.png`" alt="weather icon"/><br />
-  {{ weather['main']['pressure'] }} {{ $t('pressure') }}<br />
-  {{ weather['main']['humidity'] }}% {{ $t('humidity') }}<br />
-  {{ weather['wind']['speed'] }} {{ $t('windSpeed') }} 
-  {{ getWindDirection(weather['wind']['deg']) }} {{ $t('windDirection') }}
-</h3>
-<button v-if="selectedCity" @click="toggleUnits">{{ metrics }} °</button>
-<button v-if="selectedCity" @click="saveCity">{{ isCitySaved ? $t('removeFromFavorites') : $t('saveToFavorites') }} {{ $t('favorite') }}</button>
-<button @click="toggleLanguage">{{ currentLanguage === 'ru' ? 'EN' : 'RU' }}</button>
+<div>
+    <h3 v-if="!weather">{{ $t('loading') }}</h3>
+    <h3 v-else-if="weather">
+    {{ $t('now') }} {{ weather['main']['temp'] }} {{ $t('temperature') }}, <br />
+    {{ weather['weather'][0]['description'] }}
+    <img :src="`http://openweathermap.org/img/wn/${weather.weather[0].icon}.png`" alt="weather icon"/><br />
+    {{ weather['main']['pressure'] }} {{ $t('pressure') }}<br />
+    {{ weather['main']['humidity'] }}% {{ $t('humidity') }}<br />
+    {{ weather['wind']['speed'] }} {{ $t('windSpeed') }} 
+    {{ getWindDirection(weather['wind']['deg']) }} {{ $t('windDirection') }}
+  </h3>
+  <button v-if="selectedCity" @click="toggleUnits">{{ metrics }} °</button>
+  <button v-if="selectedCity" @click="saveCity">{{ isCitySaved ? $t('removeFromFavorites') : $t('saveToFavorites') }} {{ $t('favorite') }}</button>
+  <button @click="toggleLanguage">{{ currentLanguage === 'ru' ? 'EN' : 'RU' }}</button>
+  
+  <div class="user-favorites">
+    <UserFavorites v-if="selectedCity" :cities="favoriteCities" @removeCity="removeCity" />
+  </div>
+</div>
 
 <weather-forecast v-if="selectedCity" :city="selectedCity" :metrics="metrics" />
-<UserFavorites v-if="selectedCity" :cities="favoriteCities" @removeCity="removeCity" />
 </template>
 
 <script>
@@ -61,7 +66,7 @@ export default {
         this.selectedCityName = this.cities[this.selectedCity].name;
         const { lat, lon } = this.cities[this.selectedCity];
 
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=7d44d3f288627d47a09f48d8806ed066&units=metric&lang=ru`)
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=7d44d3f288627d47a09f48d8806ed066&units=metric`)
         .then(resp=>resp.json())
         .then(json=>{
           this.weather = json;
@@ -69,8 +74,11 @@ export default {
       }
     },
     getWindDirection(deg) {
-      const directions = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
-      return directions[Math.round(deg / 45) % 8];
+      const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+      const index = Math.round(deg / 45) % 8;
+      const direction = directions[index];
+    
+      return this.$t(`windDirections.${direction}`);
     },
     toggleUnits() {
       this.metrics = this.metrics === 'C' ? 'F' : 'C';
@@ -119,10 +127,6 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
-
-h1, h2, h3 {
-  margin: 10px;
 }
 
 @media (max-width: 768px) {

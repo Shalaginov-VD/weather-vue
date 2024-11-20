@@ -16,7 +16,17 @@ const messages = {
     removeFromFavorites: 'Remove',
     delete: 'Delete',
     now: 'Now',
-    favorite: 'to favorite'
+    favorite: 'to favorite',
+    windDirections: {
+      N: 'N',
+      NE: 'NE',
+      E: 'E',
+      SE: 'SE',
+      S: 'S',
+      SW: 'SW',
+      W: 'W',
+      NW: 'NW'
+    }
   },
   ru: {
     selectCity: 'Выберите город',
@@ -33,7 +43,17 @@ const messages = {
     removeFromFavorites: 'Убрать',
     delete: 'Удалить',
     now: 'Сейчас',
-    favorite: 'избранное'
+    favorite: 'избранное',
+    windDirections: {
+      N: 'С',
+      NE: 'СВ',
+      E: 'В',
+      SE: 'ЮВ',
+      S: 'Ю',
+      SW: 'ЮЗ',
+      W: 'З',
+      NW: 'СЗ'
+    }
   },
 };
 

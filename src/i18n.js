@@ -11,6 +11,12 @@ const messages = {
     windSpeed: 'm/s wind speed',
     windDirection: 'direction',
     forecast: 'Weather Forecast',
+    favorites: 'Favorite Cities',
+    saveToFavorites: 'Save',
+    removeFromFavorites: 'Remove',
+    delete: 'Delete',
+    now: 'Now',
+    favorite: 'to favorite'
   },
   ru: {
     selectCity: 'Выберите город',
@@ -22,6 +28,12 @@ const messages = {
     windSpeed: 'м/с скорость ветра',
     windDirection: 'направление',
     forecast: 'Прогноз погоды',
+    favorites: 'Избранные города',
+    saveToFavorites: 'Сохранить',
+    removeFromFavorites: 'Убрать',
+    delete: 'Удалить',
+    now: 'Сейчас',
+    favorite: 'избранное'
   },
 };
 

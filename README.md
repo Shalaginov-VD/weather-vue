@@ -1,4 +1,4 @@
-# pj1
+# weather-vue
 
 ## Project setup
 ```

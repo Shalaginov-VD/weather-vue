@@ -10,7 +10,7 @@
   <h1>{{ $t('weather') }} {{ selectedCityName }}</h1>
   <h3 v-if="!weather">{{ $t('loading') }}</h3>
   <h3 v-else-if="weather">
-    Сейчас {{ weather['main']['temp'] }} {{ $t('temperature') }},
+    {{ $t('now') }} {{ weather['main']['temp'] }} {{ $t('temperature') }},
     {{ weather['weather'][0]['description'] }}
     <img :src="`http://openweathermap.org/img/wn/${weather.weather[0].icon}.png`" alt="weather icon"/><br />
     {{ weather['main']['pressure'] }} {{ $t('pressure') }}<br />
@@ -19,20 +19,24 @@
     {{ getWindDirection(weather['wind']['deg']) }} {{ $t('windDirection') }}
   </h3>
   <button v-if="selectedCity" @click="toggleUnits">{{ metrics }} °</button>
+  <button v-if="selectedCity" @click="saveCity">{{ isCitySaved ? $t('removeFromFavorites') : $t('saveToFavorites') }} {{ $t('favorite') }}</button>
   <button @click="toggleLanguage">{{ currentLanguage === 'ru' ? 'EN' : 'RU' }}</button>
 
   <weather-forecast v-if="selectedCity" :city="selectedCity" :metrics="metrics" />
+  <UserFavorites v-if="selectedCity" :cities="favoriteCities" @removeCity="removeCity" />
 </template>
 
 <script>
 import WeatherForecast from './components/WeatherForecast.vue'
+import UserFavorites from './components/UserFavorites.vue'
 // import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
   components: {
     // HelloWorld
-    WeatherForecast
+    WeatherForecast,
+    UserFavorites
   },
   data() {
     return {
@@ -40,11 +44,17 @@ export default {
       selectedCityName: '',
       weather: null,
       metrics: 'C',
+      favoriteCities: this.loadFavorites(),
       cities: {
         ekb: { name: 'Екатеринбург', lat: 56.8519, lon: 60.6122 },
         msk: { name: 'Москва', lat: 55.7522, lon: 37.6156 },
         ntagil: { name: 'Нижний Тагил', lat: 57.9194, lon: 59.965 },
       }
+    }
+  },
+  computed: {
+    isCitySaved() {
+      return this.favoriteCities.includes(this.selectedCity);
     }
   },
   methods: {
@@ -77,6 +87,25 @@ export default {
     toggleLanguage() {
       this.currentLanguage = this.currentLanguage === 'ru' ? 'en' : 'ru';
       this.$i18n.locale = this.currentLanguage;
+    },
+    saveCity() {
+      if (this.isCitySaved) {
+        this.favoriteCities = this.favoriteCities.filter(city => city !== this.selectedCity);
+      } else {
+        this.favoriteCities.push(this.selectedCity);
+      }
+      this.saveFavorites(this.favoriteCities);
+    },
+    saveFavorites(cities) {
+      localStorage.setItem('favoriteCities', JSON.stringify(cities));
+    },
+    loadFavorites() {
+      const cities = localStorage.getItem('favoriteCities');
+      return cities ? JSON.parse(cities) : [];
+    },
+    removeCity(city) {
+      this.favoriteCities = this.favoriteCities.filter(c => c !== city);
+      this.saveFavorites(this.favoriteCities);
     }
   }
 }

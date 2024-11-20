@@ -1,19 +1,19 @@
 <template>
-    <div>
-      <h1>{{ $t('forecast') }}</h1>
-      <ul v-if="forecast">
+<div>
+    <h1>{{ $t('forecast') }}</h1>
+    <ul v-if="forecast">
         <h3 v-for="day in forecast.list" :key="day.dt">
-          {{ formatDate(day.dt * 1000) }}: {{ convertTemp(day.main.temp) }} {{ $t('temperature') }}, {{ day.weather[0].description }}
-          <img :src="`http://openweathermap.org/img/wn/${day.weather[0].icon}.png`" alt="weather icon"/><br />
-          {{ day.main.pressure }} {{ $t('pressure') }}<br />
-          {{ day.main.humidity }}% {{ $t('humidity') }}<br />
-          {{ day.wind.speed }} {{ $t('windSpeed') }} 
-          {{ getWindDirection(day.wind.deg) }} {{ $t('windDirection') }}
+            {{ formatDate(day.dt * 1000) }}: {{ convertTemp(day.main.temp) }} {{ $t('temperature') }}, {{ day.weather[0].description }}
+            <img :src="`http://openweathermap.org/img/wn/${day.weather[0].icon}.png`" alt="weather icon"/><br />
+            {{ day.main.pressure }} {{ $t('pressure') }}<br />
+            {{ day.main.humidity }}% {{ $t('humidity') }}<br />
+            {{ day.wind.speed }} {{ $t('windSpeed') }} 
+            {{ getWindDirection(day.wind.deg) }} {{ $t('windDirection') }}
         </h3>
-      </ul>
-      <h3 v-else>{{ $t('loading') }}</h3>
-    </div>
-  </template>  
+    </ul>
+    <h3 v-else>{{ $t('loading') }}</h3>
+</div>
+</template>  
   
 <script>
 export default {

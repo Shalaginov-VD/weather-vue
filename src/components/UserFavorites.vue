@@ -1,17 +1,17 @@
 <template>
-    <div class="favorites">
-      <h2>{{ $t('favorites') }}</h2>
-      <ul>
-        <h3 v-for="city in cities" :key="city">
-          {{ getCityName(city) }}
-          <button @click="$emit('removeCity', city)">{{ $t('delete') }}</button>
-        </h3>
-      </ul>
-    </div>
-  </template>
+<div class="favorites">
+  <h2>{{ $t('favorites') }}</h2>
+  <ul>
+    <h3 v-for="city in cities" :key="city">
+      {{ getCityName(city) }}
+      <button @click="$emit('removeCity', city)">{{ $t('delete') }}</button>
+    </h3>
+  </ul>
+</div>
+</template>
   
-  <script>
-  export default {
+<script>
+export default {
   props: {
     cities: {
       type: Array,
@@ -23,5 +23,5 @@
       return this.$parent.cities[city].name;
     }
   }
-  }
-  </script>
+}
+</script>

@@ -1,40 +1,38 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png"><br />
-  <select v-model="selectedCity" @change="mounted">
-    <option value="">{{ $t('selectCity') }}</option>
-    <option value="ekb">{{ cities.ekb.name }}</option>
-    <option value="msk">{{ cities.msk.name }}</option>
-    <option value="ntagil">{{ cities.ntagil.name }}</option>
-  </select>
+<img alt="Vue logo" src="./assets/logo.png"><br />
+<select v-model="selectedCity" @change="mounted">
+  <option value="">{{ $t('selectCity') }}</option>
+  <option value="ekb">{{ cities.ekb.name }}</option>
+  <option value="msk">{{ cities.msk.name }}</option>
+  <option value="ntagil">{{ cities.ntagil.name }}</option>
+</select>
 
-  <h1>{{ $t('weather') }} {{ selectedCityName }}</h1>
-  <h3 v-if="!weather">{{ $t('loading') }}</h3>
-  <h3 v-else-if="weather">
-    {{ $t('now') }} {{ weather['main']['temp'] }} {{ $t('temperature') }},
-    {{ weather['weather'][0]['description'] }}
-    <img :src="`http://openweathermap.org/img/wn/${weather.weather[0].icon}.png`" alt="weather icon"/><br />
-    {{ weather['main']['pressure'] }} {{ $t('pressure') }}<br />
-    {{ weather['main']['humidity'] }}% {{ $t('humidity') }}<br />
-    {{ weather['wind']['speed'] }} {{ $t('windSpeed') }} 
-    {{ getWindDirection(weather['wind']['deg']) }} {{ $t('windDirection') }}
-  </h3>
-  <button v-if="selectedCity" @click="toggleUnits">{{ metrics }} °</button>
-  <button v-if="selectedCity" @click="saveCity">{{ isCitySaved ? $t('removeFromFavorites') : $t('saveToFavorites') }} {{ $t('favorite') }}</button>
-  <button @click="toggleLanguage">{{ currentLanguage === 'ru' ? 'EN' : 'RU' }}</button>
+<h1>{{ $t('weather') }} {{ selectedCityName }}</h1>
+<h3 v-if="!weather">{{ $t('loading') }}</h3>
+<h3 v-else-if="weather">
+  {{ $t('now') }} {{ weather['main']['temp'] }} {{ $t('temperature') }},
+  {{ weather['weather'][0]['description'] }}
+  <img :src="`http://openweathermap.org/img/wn/${weather.weather[0].icon}.png`" alt="weather icon"/><br />
+  {{ weather['main']['pressure'] }} {{ $t('pressure') }}<br />
+  {{ weather['main']['humidity'] }}% {{ $t('humidity') }}<br />
+  {{ weather['wind']['speed'] }} {{ $t('windSpeed') }} 
+  {{ getWindDirection(weather['wind']['deg']) }} {{ $t('windDirection') }}
+</h3>
+<button v-if="selectedCity" @click="toggleUnits">{{ metrics }} °</button>
+<button v-if="selectedCity" @click="saveCity">{{ isCitySaved ? $t('removeFromFavorites') : $t('saveToFavorites') }} {{ $t('favorite') }}</button>
+<button @click="toggleLanguage">{{ currentLanguage === 'ru' ? 'EN' : 'RU' }}</button>
 
-  <weather-forecast v-if="selectedCity" :city="selectedCity" :metrics="metrics" />
-  <UserFavorites v-if="selectedCity" :cities="favoriteCities" @removeCity="removeCity" />
+<weather-forecast v-if="selectedCity" :city="selectedCity" :metrics="metrics" />
+<UserFavorites v-if="selectedCity" :cities="favoriteCities" @removeCity="removeCity" />
 </template>
 
 <script>
 import WeatherForecast from './components/WeatherForecast.vue'
 import UserFavorites from './components/UserFavorites.vue'
-// import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
   components: {
-    // HelloWorld
     WeatherForecast,
     UserFavorites
   },
@@ -113,11 +111,41 @@ export default {
 
 <style>
 #app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+h1, h2, h3 {
+  margin: 10px;
+}
+
+@media (max-width: 768px) {
+  #app {
+    margin-top: 20px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  select, button {
+    width: 100%;
+    margin: 10px 0;
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 </style>

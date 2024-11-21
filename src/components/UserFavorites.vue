@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     getCityName(city) {
-      return this.$parent.cities[city].name;
+      return this.$t(`cities.${city}`);
     }
   }
 }

@@ -4,7 +4,7 @@
     <h3 v-if="forecast">
         <h3 v-for="day in forecast.list" :key="day.dt">
             {{ formatDate(day.dt * 1000) }}: {{ convertTemp(day.main.temp) }} {{ $t('temperature') }}<br />
-            {{ day.weather[0].description }}
+            {{ $t(`weatherDesc.${day.weather[0].description.replace(/ /g, '_')}`) }}
             <img :src="`http://openweathermap.org/img/wn/${day.weather[0].icon}.png`" alt="weather icon"/><br />
             {{ day.main.pressure }} {{ $t('pressure') }}<br />
             {{ day.main.humidity }}% {{ $t('humidity') }}<br />
@@ -30,6 +30,24 @@ export default {
     },
     created() {
         this.fetchForecast();
+    },
+    watch: {
+        city: {
+            immediate: true,
+            handler() {
+                this.fetchForecast();
+            }
+        },
+        metrics: {
+            immediate: true,
+            handler() {
+                if (this.forecast) {
+                    this.forecast.list.forEach(day => {
+                        day.main.temp = this.convertTemp(day.main.temp);
+                    });
+                }
+            }
+        }
     },
     methods: {
         fetchForecast() {

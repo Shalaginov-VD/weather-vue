@@ -1,10 +1,10 @@
 <template>
 <img alt="Vue logo" src="./assets/logo.png"><br />
-<select v-model="selectedCity" @change="mounted">
+<select v-model="selectedCity" @change="fetchWeather">
   <option value="">{{ $t('selectCity') }}</option>
-  <option value="ekb">{{ cities.ekb.name }}</option>
-  <option value="msk">{{ cities.msk.name }}</option>
-  <option value="ntagil">{{ cities.ntagil.name }}</option>
+  <option value="ekb">{{ $t('cities.ekb') }}</option>
+  <option value="msk">{{ $t('cities.msk') }}</option>
+  <option value="ntagil">{{ $t('cities.ntagil') }}</option>
 </select>
 
 <h1>{{ $t('weather') }} {{ selectedCityName }}</h1>
@@ -12,7 +12,7 @@
     <h3 v-if="!weather">{{ $t('loading') }}</h3>
     <h3 v-else-if="weather">
     {{ $t('now') }} {{ weather['main']['temp'] }} {{ $t('temperature') }}, <br />
-    {{ weather['weather'][0]['description'] }}
+    {{ $t(`weatherDesc.${weather.weather[0].description.replace(/ /g, '_')}`) }}
     <img :src="`http://openweathermap.org/img/wn/${weather.weather[0].icon}.png`" alt="weather icon"/><br />
     {{ weather['main']['pressure'] }} {{ $t('pressure') }}<br />
     {{ weather['main']['humidity'] }}% {{ $t('humidity') }}<br />
@@ -21,10 +21,10 @@
   </h3>
   <button v-if="selectedCity" @click="toggleUnits">{{ metrics }} °</button>
   <button v-if="selectedCity" @click="saveCity">{{ isCitySaved ? $t('removeFromFavorites') : $t('saveToFavorites') }} {{ $t('favorite') }}</button>
-  <button @click="toggleLanguage">{{ currentLanguage === 'ru' ? 'EN' : 'RU' }}</button>
+  <button @click="toggleLanguage">{{ currentLanguage === 'en' ? 'RU' : 'EN' }}</button>
   
   <div class="user-favorites">
-    <UserFavorites v-if="selectedCity" :cities="favoriteCities" @removeCity="removeCity" />
+    <UserFavorites v-if="favoriteCities.length" :cities="favoriteCities" @removeCity="removeCity" />
   </div>
 </div>
 
@@ -61,14 +61,14 @@ export default {
     }
   },
   methods: {
-    mounted() {
+    fetchWeather() {
       if (this.selectedCity) {
-        this.selectedCityName = this.cities[this.selectedCity].name;
+        this.selectedCityName = this.$t(`cities.${this.selectedCity}`);
         const { lat, lon } = this.cities[this.selectedCity];
 
         fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=7d44d3f288627d47a09f48d8806ed066&units=metric`)
-        .then(resp=>resp.json())
-        .then(json=>{
+        .then(resp => resp.json())
+        .then(json => {
           this.weather = json;
         });
       }
@@ -91,8 +91,9 @@ export default {
       }
     },
     toggleLanguage() {
-      this.currentLanguage = this.currentLanguage === 'ru' ? 'en' : 'ru';
+      this.currentLanguage = this.currentLanguage === 'en' ? 'ru' : 'en';
       this.$i18n.locale = this.currentLanguage;
+      this.selectedCityName = this.$t(`cities.${this.selectedCity}`);
     },
     saveCity() {
       if (this.isCitySaved) {
